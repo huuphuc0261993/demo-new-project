@@ -97,8 +97,9 @@ const PageStaff = (() => {
               <div class="sc-name">${s.name}</div>
               <div class="sc-role">${s.role}</div>
             </div>
-            <div class="sc-today">
+            <div class="sc-today" style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
               ${shift ? '<span class="badge badge-green">On</span>' : '<span class="badge badge-gray">Off</span>'}
+              ${s.source ? `<span class="badge ${s.source === 'HOMIS' ? 'badge-blue' : 'badge-purple'}" style="font-size:9px;padding:1px 5px">${s.source}</span>` : ''}
             </div>
           </div>
           <div class="sc-body">

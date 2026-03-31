@@ -53,8 +53,7 @@
       </a>
     </nav>
     <div class="sidebar-footer">
-      データソース
-      <select><option>HOMIS</option><option>NURSEE</option></select>
+      <div class="sf-label">v1.0 Demo</div>
     </div>
   </aside>
 
@@ -63,6 +62,13 @@
     <header class="header">
       <h1 id="header-title" class="header-title">ダッシュボード</h1>
       <div class="header-right">
+        <div class="system-selector-wrap">
+          <label class="system-selector-label">System</label>
+          <select id="system-select" class="system-select">
+            <option value="HOMIS" selected>HOMIS</option>
+            <option value="NURSEE">NURSEE</option>
+          </select>
+        </div>
         <input type="date" id="global-date" value="2026-03-30">
         <button class="btn btn-primary" id="btn-run-schedule">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="15" height="15"><polyline points="23,4 23,10 17,10"/><path d="M20.49 15a9 9 0 11-1.64-8.36L23 10"/></svg>

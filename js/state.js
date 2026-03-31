@@ -1,20 +1,34 @@
 /**
  * state.js - Shared singleton. All pages read/write through AppState.
- * Manages selected date, weekly schedules, and schedule results.
+ *
+ * activeSystem: 'ALL' | 'HOMIS' | 'NURSEE'
+ *   When a system is selected, DEMO_DATA.staff and DEMO_DATA.patients are
+ *   replaced with the filtered subset so every page auto-updates.
+ *   _allStaff / _allPatients retain the full originals so edits (coords,
+ *   transport, weeklySchedules) persist across system switches.
  */
 const AppState = {
   selectedDate: '2026-03-30',
   scheduleResult: null,
+  activeSystem: 'HOMIS',
 
   /** staffId → { 0..6: { onDuty, start, end, breakStart, breakEnd } } */
   weeklySchedules: {},
 
-  /** Build weekly templates from existing DEMO_DATA.shifts */
+  /** Full unfiltered copies — set once in initWeeklySchedules() */
+  _allStaff: null,
+  _allPatients: null,
+
+  /** Build weekly templates from DEMO_DATA.shifts.
+   *  Always runs against ALL staff so schedule edits survive system switches. */
   initWeeklySchedules() {
-    for (const s of DEMO_DATA.staff) {
+    // Snapshot originals on first call (before any filtering)
+    if (!this._allStaff)    this._allStaff    = DEMO_DATA.staff.slice();
+    if (!this._allPatients) this._allPatients = DEMO_DATA.patients.slice();
+
+    for (const s of this._allStaff) {
       this.weeklySchedules[s.id] = {};
       for (let d = 0; d <= 6; d++) {
-        // Default: weekdays on, weekends off
         const isWeekend = (d === 0 || d === 6);
         this.weeklySchedules[s.id][d] = {
           onDuty: !isWeekend,
@@ -23,7 +37,7 @@ const AppState = {
         };
       }
     }
-    // Override defaults with actual shift data from data.js
+    // Override defaults with actual shift data
     for (const sh of DEMO_DATA.shifts) {
       const dow = new Date(sh.date).getDay();
       if (!this.weeklySchedules[sh.staffId]) continue;
@@ -37,11 +51,18 @@ const AppState = {
     }
   },
 
+  /** Switch data source (HOMIS | NURSEE) — filters DEMO_DATA, then refreshes. */
+  setSystem(system) {
+    this.activeSystem = system;
+    DEMO_DATA.staff    = this._allStaff.filter(s => s.source === system);
+    DEMO_DATA.patients = this._allPatients.filter(p => p.source === system);
+    this.refresh();
+  },
+
   /** Regenerate DEMO_DATA.shifts for the week containing selectedDate */
   generateShiftsForWeek() {
     const date = new Date(this.selectedDate);
     const dow = date.getDay();
-    // Anchor to Monday of the week (handle Sunday = 0)
     const monday = new Date(date);
     monday.setDate(date.getDate() - (dow === 0 ? 6 : dow - 1));
 

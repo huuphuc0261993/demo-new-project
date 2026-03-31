@@ -39,9 +39,16 @@ const App = (() => {
       showToast(`Schedule run: ${AppState.scheduleResult.assigned.length} assigned / ${AppState.scheduleResult.unassigned.length} unassigned`);
     });
 
-    // Init state and render default page
+    // System selector — switches data source for ALL pages
+    document.getElementById('system-select').addEventListener('change', e => {
+      AppState.setSystem(e.target.value);
+      const page = document.querySelector('.page.active')?.id?.replace('page-', '');
+      if (page) renderPage(page);
+    });
+
+    // Init state: default to HOMIS
     AppState.initWeeklySchedules();
-    AppState.refresh();
+    AppState.setSystem('HOMIS');
     navigateTo('dashboard');
   }
 

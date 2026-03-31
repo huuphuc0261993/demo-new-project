@@ -11,7 +11,18 @@ const PageSettings = {
           <table>
             <tr><td class="setting-key">Name</td><td>${clinic.name}</td></tr>
             <tr><td class="setting-key">Address</td><td>${clinic.address}</td></tr>
-            <tr><td class="setting-key">Lat / Lng</td><td>${clinic.lat}, ${clinic.lng}</td></tr>
+            <tr>
+              <td class="setting-key">Lat / Lng</td>
+              <td>
+                <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+                  <input class="setting-input" id="clinic-lat" type="number" step="any" value="${clinic.lat}" style="width:110px">
+                  <span style="color:var(--gray-400)">,</span>
+                  <input class="setting-input" id="clinic-lng" type="number" step="any" value="${clinic.lng}" style="width:110px">
+                  <button class="btn btn-primary" id="clinic-coords-save" style="font-size:12px;padding:5px 12px">Save</button>
+                  <a id="clinic-map-link" href="https://www.google.com/maps?q=${clinic.lat},${clinic.lng}" target="_blank" style="font-size:12px;color:var(--primary)">View on map ↗</a>
+                </div>
+              </td>
+            </tr>
             <tr><td class="setting-key">Phone</td><td>${clinic.phone}</td></tr>
             <tr><td class="setting-key">Data source</td><td><span class="badge badge-blue">${clinic.source}</span></td></tr>
           </table>
@@ -19,13 +30,26 @@ const PageSettings = {
         <div class="card">
           <div class="card-title">Facilities</div>
           <table>
-            <thead><tr><th>ID</th><th>Name</th><th>Address</th></tr></thead>
+            <thead><tr><th>ID</th><th>Name</th><th>Address</th><th>Coordinates</th></tr></thead>
             <tbody>
               ${DEMO_DATA.facilities.map(f => `
                 <tr>
                   <td style="color:var(--gray-500)">${f.id}</td>
                   <td><strong>${f.name}</strong></td>
                   <td>${f.address}</td>
+                  <td class="facility-coords-cell" data-fid="${f.id}">
+                    <div class="fac-coords-view" style="display:flex;align-items:center;gap:6px">
+                      <span class="fac-coords-text" style="font-size:12px;color:var(--gray-600)">${f.lat.toFixed(4)}, ${f.lng.toFixed(4)}</span>
+                      <button class="btn fac-coords-edit-btn" data-fid="${f.id}" style="font-size:11px;padding:2px 8px">Edit</button>
+                    </div>
+                    <div class="fac-coords-form" style="display:none;gap:4px;flex-wrap:wrap;align-items:center">
+                      <input type="number" step="any" class="setting-input fac-lat" value="${f.lat}" style="width:100px;font-size:12px;padding:3px 6px">
+                      <input type="number" step="any" class="setting-input fac-lng" value="${f.lng}" style="width:100px;font-size:12px;padding:3px 6px">
+                      <button class="btn btn-primary fac-coords-save" data-fid="${f.id}" style="font-size:11px;padding:3px 9px">Save</button>
+                      <button class="btn btn-outline fac-coords-cancel" style="font-size:11px;padding:3px 9px">Cancel</button>
+                      <a href="https://www.google.com/maps?q=${f.lat},${f.lng}" target="_blank" class="fac-map-link" style="font-size:11px;color:var(--primary)">View ↗</a>
+                    </div>
+                  </td>
                 </tr>`).join('')}
             </tbody>
           </table>
@@ -119,6 +143,70 @@ const PageSettings = {
       </div>`;
 
     this._wireTransportEvents();
+    this._wireClinicCoords();
+  },
+
+  _wireClinicCoords() {
+    // Clinic save
+    const saveBtn = document.getElementById('clinic-coords-save');
+    if (saveBtn) {
+      saveBtn.addEventListener('click', () => {
+        const lat = parseFloat(document.getElementById('clinic-lat').value);
+        const lng = parseFloat(document.getElementById('clinic-lng').value);
+        if (isNaN(lat) || isNaN(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+          showToast('Invalid coordinates', 'error'); return;
+        }
+        DEMO_DATA.clinic.lat = lat;
+        DEMO_DATA.clinic.lng = lng;
+        const link = document.getElementById('clinic-map-link');
+        if (link) link.href = `https://www.google.com/maps?q=${lat},${lng}`;
+        AppState.refresh();
+        showToast(`Clinic coordinates updated → ${lat}, ${lng}`);
+      });
+    }
+
+    // Facilities inline edit
+    const content = document.getElementById('settings-content');
+    content.querySelectorAll('.fac-coords-edit-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const cell = btn.closest('.facility-coords-cell');
+        cell.querySelector('.fac-coords-view').style.display = 'none';
+        const form = cell.querySelector('.fac-coords-form');
+        form.style.display = 'flex';
+        form.querySelector('.fac-lat').focus();
+      });
+    });
+
+    content.querySelectorAll('.fac-coords-cancel').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const cell = btn.closest('.facility-coords-cell');
+        cell.querySelector('.fac-coords-view').style.display = 'flex';
+        cell.querySelector('.fac-coords-form').style.display = 'none';
+      });
+    });
+
+    content.querySelectorAll('.fac-coords-save').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const fid = btn.dataset.fid;
+        const cell = btn.closest('.facility-coords-cell');
+        const lat = parseFloat(cell.querySelector('.fac-lat').value);
+        const lng = parseFloat(cell.querySelector('.fac-lng').value);
+        if (isNaN(lat) || isNaN(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+          showToast('Invalid coordinates', 'error'); return;
+        }
+        const facility = DEMO_DATA.facilities.find(f => f.id === fid);
+        if (!facility) return;
+        facility.lat = lat;
+        facility.lng = lng;
+        const mapLink = cell.querySelector('.fac-map-link');
+        if (mapLink) mapLink.href = `https://www.google.com/maps?q=${lat},${lng}`;
+        cell.querySelector('.fac-coords-text').textContent = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+        cell.querySelector('.fac-coords-view').style.display = 'flex';
+        cell.querySelector('.fac-coords-form').style.display = 'none';
+        AppState.refresh();
+        showToast(`${facility.name} coordinates updated → ${lat.toFixed(4)}, ${lng.toFixed(4)}`);
+      });
+    });
   },
 
   _transportRows() {

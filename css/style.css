@@ -82,10 +82,25 @@ body {
   font-size: 11px;
   color: #475569;
 }
+.sf-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #475569;
+  margin-bottom: 6px;
+}
+.sf-badge {
+  display: none;
+  margin-top: 5px;
+  font-size: 10px;
+  color: #64748b;
+  background: rgba(255,255,255,0.05);
+  border-radius: 4px;
+  padding: 3px 7px;
+}
 .sidebar-footer select {
   width: 100%;
-  margin-top: 5px;
-  padding: 5px 8px;
+  padding: 6px 8px;
   background: rgba(255,255,255,0.06);
   border: 1px solid rgba(255,255,255,0.1);
   color: #94a3b8;
@@ -109,6 +124,35 @@ body {
 }
 .header-title { font-size: 15px; font-weight: 700; min-width: 0; white-space: nowrap; }
 .header-right { display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
+
+/* System selector in header */
+.system-selector-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--gray-100);
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+  padding: 4px 10px 4px 8px;
+}
+.system-selector-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+.system-select {
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+  cursor: pointer;
+  outline: none;
+  padding: 0 2px;
+}
 
 input[type="date"] {
   padding: 6px 10px;
