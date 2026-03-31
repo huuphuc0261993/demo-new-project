@@ -110,7 +110,7 @@ const PageCalendar = {
       slotDuration: '00:30:00',
       events,
       height: 'auto',
-      editable: true,
+      editable: false,
       eventContent(info) {
         const p = info.event.extendedProps;
         const start = info.event.start?.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }) || '';
