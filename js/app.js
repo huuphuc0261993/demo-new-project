@@ -6,13 +6,13 @@ const App = (() => {
   let mapInstance = null;
 
   const PAGE_TITLES = {
-    dashboard: 'Dashboard',
-    schedule:  'Schedule Detail',
-    calendar:  'Calendar',
-    map:       'Route Map',
-    staff:     'Staff',
-    patients:  'Patients',
-    settings:  'Settings',
+    dashboard: 'ダッシュボード',
+    schedule:  'スケジュール詳細',
+    calendar:  'カレンダー',
+    map:       'ルートマップ',
+    staff:     'スタッフ',
+    patients:  '患者一覧',
+    settings:  '設定',
   };
 
   function init() {
@@ -36,7 +36,7 @@ const App = (() => {
       AppState.setDate(document.getElementById('global-date').value);
       const page = document.querySelector('.page.active')?.id?.replace('page-', '');
       if (page) renderPage(page);
-      showToast(`Schedule run: ${AppState.scheduleResult.assigned.length} assigned / ${AppState.scheduleResult.unassigned.length} unassigned`);
+      showToast(`スケジュール実行完了: ${AppState.scheduleResult.assigned.length} 件割り当て済み / ${AppState.scheduleResult.unassigned.length} 件未割り当て`);
     });
 
     // System selector — switches data source for ALL pages

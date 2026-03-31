@@ -1010,3 +1010,69 @@ select.transport-select:focus { outline: none; border-color: var(--primary); }
   .stats-row { grid-template-columns: repeat(2, 1fr); }
   .grid-2 { grid-template-columns: 1fr; }
 }
+
+/* ---- Calendar event content ---- */
+.fc-event-inner { padding: 2px 1px; line-height: 1.3; overflow: hidden; }
+.fc-event-time-range { font-size: 10px; opacity: 0.75; margin-bottom: 2px; }
+.fc-event-staff-name { font-size: 12px; font-weight: 700; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fc-event-patient { font-size: 11px; opacity: 0.65; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ---- Staff Schedule Modal ---- */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0,0,0,0.45);
+  display: flex; align-items: center; justify-content: center;
+  animation: modalFadeIn 0.15s ease;
+}
+@keyframes modalFadeIn { from { opacity: 0 } to { opacity: 1 } }
+
+.modal-box {
+  background: #fff; border-radius: 14px;
+  width: 480px; max-width: calc(100vw - 32px);
+  max-height: 80vh; display: flex; flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  animation: modalSlideUp 0.18s ease;
+}
+@keyframes modalSlideUp { from { transform: translateY(16px); opacity: 0 } to { transform: translateY(0); opacity: 1 } }
+
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 20px 14px; border-bottom: 1px solid var(--gray-200);
+  flex-shrink: 0;
+}
+.modal-staff-info { display: flex; align-items: center; gap: 12px; }
+.modal-avatar { width: 40px; height: 40px; font-size: 16px; flex-shrink: 0; }
+.modal-staff-name { font-size: 16px; font-weight: 700; color: var(--gray-900); }
+.modal-staff-role { font-size: 12px; color: var(--gray-500); margin-top: 2px; }
+.modal-close {
+  background: none; border: none; cursor: pointer;
+  font-size: 18px; color: var(--gray-500); padding: 4px 8px;
+  border-radius: 6px; line-height: 1;
+}
+.modal-close:hover { background: var(--gray-100); color: var(--gray-900); }
+
+.modal-body { overflow-y: auto; padding: 16px 20px 20px; }
+
+.modal-date { font-size: 12px; color: var(--gray-500); margin-bottom: 14px; }
+
+.modal-visit-row {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid var(--gray-100);
+}
+.modal-visit-row:last-child { border-bottom: none; }
+.modal-visit-num {
+  width: 24px; height: 24px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0;
+  margin-top: 2px;
+}
+.modal-visit-info { flex: 1; min-width: 0; }
+.modal-visit-name { font-weight: 600; font-size: 14px; color: var(--gray-900); }
+.modal-visit-time { font-size: 12px; color: var(--gray-500); margin-top: 2px; }
+.modal-visit-meta { display: flex; gap: 6px; margin-top: 5px; flex-wrap: wrap; }
+.modal-empty { text-align: center; color: var(--gray-400); padding: 24px 0; font-size: 13px; }
+.modal-shift-bar {
+  background: var(--gray-50); border-radius: 8px; padding: 8px 12px;
+  font-size: 12px; color: var(--gray-500); margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px;
+}

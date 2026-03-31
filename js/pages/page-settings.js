@@ -7,30 +7,30 @@ const PageSettings = {
     document.getElementById('settings-content').innerHTML = `
       <div class="grid-2">
         <div class="card">
-          <div class="card-title">Base Clinic</div>
+          <div class="card-title">拠点クリニック</div>
           <table>
-            <tr><td class="setting-key">Name</td><td>${clinic.name}</td></tr>
-            <tr><td class="setting-key">Address</td><td>${clinic.address}</td></tr>
+            <tr><td class="setting-key">名称</td><td>${clinic.name}</td></tr>
+            <tr><td class="setting-key">住所</td><td>${clinic.address}</td></tr>
             <tr>
-              <td class="setting-key">Lat / Lng</td>
+              <td class="setting-key">緯度 / 経度</td>
               <td>
                 <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
                   <input class="setting-input" id="clinic-lat" type="number" step="any" value="${clinic.lat}" style="width:110px">
                   <span style="color:var(--gray-400)">,</span>
                   <input class="setting-input" id="clinic-lng" type="number" step="any" value="${clinic.lng}" style="width:110px">
-                  <button class="btn btn-primary" id="clinic-coords-save" style="font-size:12px;padding:5px 12px">Save</button>
-                  <a id="clinic-map-link" href="https://www.google.com/maps?q=${clinic.lat},${clinic.lng}" target="_blank" style="font-size:12px;color:var(--primary)">View on map ↗</a>
+                  <button class="btn btn-primary" id="clinic-coords-save" style="font-size:12px;padding:5px 12px">保存</button>
+                  <a id="clinic-map-link" href="https://www.google.com/maps?q=${clinic.lat},${clinic.lng}" target="_blank" style="font-size:12px;color:var(--primary)">地図で確認 ↗</a>
                 </div>
               </td>
             </tr>
-            <tr><td class="setting-key">Phone</td><td>${clinic.phone}</td></tr>
-            <tr><td class="setting-key">Data source</td><td><span class="badge badge-blue">${clinic.source}</span></td></tr>
+            <tr><td class="setting-key">電話番号</td><td>${clinic.phone}</td></tr>
+            <tr><td class="setting-key">データソース</td><td><span class="badge badge-blue">${clinic.source}</span></td></tr>
           </table>
         </div>
         <div class="card">
-          <div class="card-title">Facilities</div>
+          <div class="card-title">施設一覧</div>
           <table>
-            <thead><tr><th>ID</th><th>Name</th><th>Address</th><th>Coordinates</th></tr></thead>
+            <thead><tr><th>ID</th><th>名称</th><th>住所</th><th>座標</th></tr></thead>
             <tbody>
               ${DEMO_DATA.facilities.map(f => `
                 <tr>
@@ -40,14 +40,14 @@ const PageSettings = {
                   <td class="facility-coords-cell" data-fid="${f.id}">
                     <div class="fac-coords-view" style="display:flex;align-items:center;gap:6px">
                       <span class="fac-coords-text" style="font-size:12px;color:var(--gray-600)">${f.lat.toFixed(4)}, ${f.lng.toFixed(4)}</span>
-                      <button class="btn fac-coords-edit-btn" data-fid="${f.id}" style="font-size:11px;padding:2px 8px">Edit</button>
+                      <button class="btn fac-coords-edit-btn" data-fid="${f.id}" style="font-size:11px;padding:2px 8px">編集</button>
                     </div>
                     <div class="fac-coords-form" style="display:none;gap:4px;flex-wrap:wrap;align-items:center">
                       <input type="number" step="any" class="setting-input fac-lat" value="${f.lat}" style="width:100px;font-size:12px;padding:3px 6px">
                       <input type="number" step="any" class="setting-input fac-lng" value="${f.lng}" style="width:100px;font-size:12px;padding:3px 6px">
-                      <button class="btn btn-primary fac-coords-save" data-fid="${f.id}" style="font-size:11px;padding:3px 9px">Save</button>
-                      <button class="btn btn-outline fac-coords-cancel" style="font-size:11px;padding:3px 9px">Cancel</button>
-                      <a href="https://www.google.com/maps?q=${f.lat},${f.lng}" target="_blank" class="fac-map-link" style="font-size:11px;color:var(--primary)">View ↗</a>
+                      <button class="btn btn-primary fac-coords-save" data-fid="${f.id}" style="font-size:11px;padding:3px 9px">保存</button>
+                      <button class="btn btn-outline fac-coords-cancel" style="font-size:11px;padding:3px 9px">キャンセル</button>
+                      <a href="https://www.google.com/maps?q=${f.lat},${f.lng}" target="_blank" class="fac-map-link" style="font-size:11px;color:var(--primary)">地図 ↗</a>
                     </div>
                   </td>
                 </tr>`).join('')}
@@ -57,24 +57,24 @@ const PageSettings = {
       </div>
 
       <div class="card">
-        <div class="card-title">Integrations</div>
+        <div class="card-title">連携システム</div>
         <table>
-          <thead><tr><th>System</th><th>Status</th><th>Data provided</th></tr></thead>
+          <thead><tr><th>システム</th><th>状態</th><th>提供データ</th></tr></thead>
           <tbody>
             <tr>
               <td><span class="badge badge-blue">HOMIS</span></td>
-              <td><span class="badge badge-green">Connected</span></td>
-              <td>Staff / Patients (EMR) / Clinic info</td>
+              <td><span class="badge badge-green">接続済み</span></td>
+              <td>スタッフ / 患者 (EMR) / クリニック情報</td>
             </tr>
             <tr>
               <td><span class="badge badge-purple">NURSEE</span></td>
-              <td><span class="badge badge-green">Connected</span></td>
-              <td>Staff / Shift schedules</td>
+              <td><span class="badge badge-green">接続済み</span></td>
+              <td>スタッフ / シフトスケジュール</td>
             </tr>
             <tr>
               <td><span class="badge badge-gray">Google Maps API</span></td>
-              <td><span class="badge badge-yellow">Demo Mode</span></td>
-              <td>Travel time / Distance / Route optimization</td>
+              <td><span class="badge badge-yellow">デモモード</span></td>
+              <td>移動時間 / 距離 / ルート最適化</td>
             </tr>
           </tbody>
         </table>
@@ -85,17 +85,17 @@ const PageSettings = {
         <!-- Transport table -->
         <div class="card" style="flex:1;min-width:0">
           <div class="card-title">
-            Transport Modes
-            <button class="btn btn-outline" id="tp-add-btn" style="margin-left:auto;font-size:12px;padding:5px 12px">+ Add</button>
+            移動手段
+            <button class="btn btn-outline" id="tp-add-btn" style="margin-left:auto;font-size:12px;padding:5px 12px">+ 追加</button>
           </div>
           <div class="table-wrap">
             <table>
               <thead>
                 <tr>
-                  <th style="width:100px">Key</th>
-                  <th>Label</th>
-                  <th style="width:120px">Speed (km/h)</th>
-                  <th style="width:140px">Color</th>
+                  <th style="width:100px">キー</th>
+                  <th>ラベル</th>
+                  <th style="width:120px">速度 (km/h)</th>
+                  <th style="width:140px">カラー</th>
                   <th style="width:72px"></th>
                 </tr>
               </thead>
@@ -108,36 +108,36 @@ const PageSettings = {
 
         <!-- Add form panel (hidden by default) -->
         <div class="card tp-add-panel" id="tp-add-panel" style="display:none">
-          <div class="card-title">New Transport Mode</div>
+          <div class="card-title">新しい移動手段</div>
 
           <div class="tp-form-group">
-            <label class="tp-form-lbl">Key <span class="tp-form-hint">(unique ID, no spaces)</span></label>
-            <input class="setting-input" id="tp-new-key" placeholder="e.g. scooter">
+            <label class="tp-form-lbl">キー <span class="tp-form-hint">（一意のID、スペース不可）</span></label>
+            <input class="setting-input" id="tp-new-key" placeholder="例: scooter">
           </div>
 
           <div class="tp-form-group">
-            <label class="tp-form-lbl">Display label</label>
-            <input class="setting-input" id="tp-new-label" placeholder="e.g. Scooter">
+            <label class="tp-form-lbl">表示ラベル</label>
+            <input class="setting-input" id="tp-new-label" placeholder="例: スクーター">
           </div>
 
           <div class="tp-form-group">
-            <label class="tp-form-lbl">Average speed (km/h)</label>
+            <label class="tp-form-lbl">平均速度 (km/h)</label>
             <input class="setting-input" id="tp-new-speed" type="number" min="1" max="300" placeholder="20">
           </div>
 
           <div class="tp-form-group">
-            <label class="tp-form-lbl">Color</label>
+            <label class="tp-form-lbl">カラー</label>
             <div style="display:flex;align-items:center;gap:10px">
               <input type="color" id="tp-new-color" value="#6366f1" class="tp-color-input" style="width:44px;height:36px">
-              <span id="tp-new-preview" class="transport-chip">Preview</span>
+              <span id="tp-new-preview" class="transport-chip">プレビュー</span>
             </div>
           </div>
 
           <div id="tp-add-error" class="tp-error"></div>
 
           <div class="tp-form-actions">
-            <button class="btn btn-primary" id="tp-add-confirm">Add transport</button>
-            <button class="btn btn-outline" id="tp-add-cancel">Cancel</button>
+            <button class="btn btn-primary" id="tp-add-confirm">移動手段を追加</button>
+            <button class="btn btn-outline" id="tp-add-cancel">キャンセル</button>
           </div>
         </div>
       </div>`;
@@ -154,14 +154,14 @@ const PageSettings = {
         const lat = parseFloat(document.getElementById('clinic-lat').value);
         const lng = parseFloat(document.getElementById('clinic-lng').value);
         if (isNaN(lat) || isNaN(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) {
-          showToast('Invalid coordinates', 'error'); return;
+          showToast('座標が無効です', 'error'); return;
         }
         DEMO_DATA.clinic.lat = lat;
         DEMO_DATA.clinic.lng = lng;
         const link = document.getElementById('clinic-map-link');
         if (link) link.href = `https://www.google.com/maps?q=${lat},${lng}`;
         AppState.refresh();
-        showToast(`Clinic coordinates updated → ${lat}, ${lng}`);
+        showToast(`クリニックの座標を更新しました → ${lat}, ${lng}`);
       });
     }
 
@@ -192,7 +192,7 @@ const PageSettings = {
         const lat = parseFloat(cell.querySelector('.fac-lat').value);
         const lng = parseFloat(cell.querySelector('.fac-lng').value);
         if (isNaN(lat) || isNaN(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) {
-          showToast('Invalid coordinates', 'error'); return;
+          showToast('座標が無効です', 'error'); return;
         }
         const facility = DEMO_DATA.facilities.find(f => f.id === fid);
         if (!facility) return;
@@ -204,7 +204,7 @@ const PageSettings = {
         cell.querySelector('.fac-coords-view').style.display = 'flex';
         cell.querySelector('.fac-coords-form').style.display = 'none';
         AppState.refresh();
-        showToast(`${facility.name} coordinates updated → ${lat.toFixed(4)}, ${lng.toFixed(4)}`);
+        showToast(`${facility.name} の座標を更新しました → ${lat.toFixed(4)}, ${lng.toFixed(4)}`);
       });
     });
   },
@@ -222,7 +222,7 @@ const PageSettings = {
           </div>
         </td>
         <td>
-          <button class="btn tp-delete-btn" data-key="${k}">Delete</button>
+          <button class="btn tp-delete-btn" data-key="${k}">削除</button>
         </td>
       </tr>`).join('');
   },
@@ -270,7 +270,7 @@ const PageSettings = {
       btn.addEventListener('click', () => {
         const k = btn.dataset.key;
         if (Object.keys(Scheduler.TRANSPORTS).length <= 1) {
-          showToast('Must keep at least one transport mode', 'error'); return;
+          showToast('移動手段は最低1つ必要です', 'error'); return;
         }
         const fallback = Object.keys(Scheduler.TRANSPORTS).find(x => x !== k);
         let affected = 0;
@@ -294,7 +294,7 @@ const PageSettings = {
 
     // Live preview in add form
     const updatePreview = () => {
-      const label = document.getElementById('tp-new-label')?.value || 'Preview';
+      const label = document.getElementById('tp-new-label')?.value || 'プレビュー';
       const color = document.getElementById('tp-new-color')?.value || '#6366f1';
       const prev = document.getElementById('tp-new-preview');
       if (prev) { prev.textContent = label || 'Preview'; prev.style.outline = `2px solid ${color}`; }
@@ -317,10 +317,10 @@ const PageSettings = {
       const color = document.getElementById('tp-new-color').value;
       const errEl = document.getElementById('tp-add-error');
 
-      if (!key)                       { errEl.textContent = 'Key is required.'; return; }
-      if (Scheduler.TRANSPORTS[key])  { errEl.textContent = `Key "${key}" already exists.`; return; }
-      if (!label)                     { errEl.textContent = 'Label is required.'; return; }
-      if (!speed || speed <= 0)       { errEl.textContent = 'Speed must be a positive number.'; return; }
+      if (!key)                       { errEl.textContent = 'キーは必須です。'; return; }
+      if (Scheduler.TRANSPORTS[key])  { errEl.textContent = `キー "${key}" はすでに存在します。`; return; }
+      if (!label)                     { errEl.textContent = 'ラベルは必須です。'; return; }
+      if (!speed || speed <= 0)       { errEl.textContent = '速度は正の数を入力してください。'; return; }
 
       Scheduler.TRANSPORTS[key] = { label, speed, color };
       AppState.refresh();

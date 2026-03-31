@@ -40,9 +40,9 @@ const PageStaff = (() => {
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="color:var(--gray-400);flex-shrink:0">
           <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
-        <input type="text" id="staff-search-input" placeholder="Search by name or role…" autocomplete="off">
+        <input type="text" id="staff-search-input" placeholder="氏名・役職で検索…" autocomplete="off">
         <span id="staff-search-count" class="staff-search-count"></span>
-        <button id="staff-search-clear" class="staff-search-clear" style="display:none" title="Clear">✕</button>
+        <button id="staff-search-clear" class="staff-search-clear" style="display:none" title="クリア">✕</button>
       </div>`;
 
     document.getElementById('staff-search-input').addEventListener('input', e => {
@@ -71,15 +71,15 @@ const PageStaff = (() => {
     const countEl = document.getElementById('staff-search-count');
     if (countEl) {
       countEl.textContent = searchQuery
-        ? `${filtered.length} of ${DEMO_DATA.staff.length}`
-        : `${DEMO_DATA.staff.length} staff`;
+        ? `${filtered.length} / ${DEMO_DATA.staff.length}`
+        : `${DEMO_DATA.staff.length} 名`;
     }
 
     const cardsEl = document.getElementById('staff-cards');
     const pagerEl = document.getElementById('staff-pager');
 
     if (!filtered.length) {
-      cardsEl.innerHTML = `<div class="staff-empty-msg">No staff match "<em>${searchQuery}</em>"</div>`;
+      cardsEl.innerHTML = `<div class="staff-empty-msg">"<em>${searchQuery}</em>" に一致するスタッフがいません</div>`;
       pagerEl.innerHTML = '';
       return;
     }
@@ -98,15 +98,15 @@ const PageStaff = (() => {
               <div class="sc-role">${s.role}</div>
             </div>
             <div class="sc-today" style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
-              ${shift ? '<span class="badge badge-green">On</span>' : '<span class="badge badge-gray">Off</span>'}
+              ${shift ? '<span class="badge badge-green">出勤</span>' : '<span class="badge badge-gray">休み</span>'}
               ${s.source ? `<span class="badge ${s.source === 'HOMIS' ? 'badge-blue' : 'badge-purple'}" style="font-size:9px;padding:1px 5px">${s.source}</span>` : ''}
             </div>
           </div>
           <div class="sc-body">
-            ${shift ? `<div class="sc-row"><span class="sc-key">Hours</span><span>${shift.start}–${shift.end}</span></div>` : ''}
-            <div class="sc-row"><span class="sc-key">Visits</span><span>${assignedToday}</span></div>
+            ${shift ? `<div class="sc-row"><span class="sc-key">勤務時間</span><span>${shift.start}–${shift.end}</span></div>` : ''}
+            <div class="sc-row"><span class="sc-key">訪問件数</span><span>${assignedToday}</span></div>
             <div class="sc-row">
-              <span class="sc-key">Transport</span>
+              <span class="sc-key">移動手段</span>
               <select class="transport-select" data-staff-id="${s.id}" onclick="event.stopPropagation()">
                 ${Object.entries(Scheduler.TRANSPORTS).map(([k, t]) =>
                   `<option value="${k}" ${k === s.transport ? 'selected' : ''}>${t.label}</option>`
@@ -114,7 +114,7 @@ const PageStaff = (() => {
               </select>
             </div>
           </div>
-          <div class="sc-edit-hint ${isSelected ? '' : 'muted'}">${isSelected ? 'Editing ↓' : 'Click to edit'}</div>
+          <div class="sc-edit-hint ${isSelected ? '' : 'muted'}">${isSelected ? '編集中 ↓' : 'クリックして編集'}</div>
         </div>`;
     }).join('');
 
@@ -151,7 +151,7 @@ const PageStaff = (() => {
     if (!selectedStaffId) {
       container.innerHTML = `
         <div class="card" style="margin-top:8px; text-align:center; color:var(--gray-500); font-size:13px; padding:20px">
-          Select a staff card above to edit their weekly schedule.
+          上のスタッフカードを選択して週間スケジュールを編集してください。
         </div>`;
       return;
     }
@@ -159,16 +159,16 @@ const PageStaff = (() => {
     const s = DEMO_DATA.staff.find(x => x.id === selectedStaffId);
     const schedule = AppState.weeklySchedules[selectedStaffId] || {};
     const DAYS = [
-      { dow: 1, name: 'Mon' }, { dow: 2, name: 'Tue' }, { dow: 3, name: 'Wed' },
-      { dow: 4, name: 'Thu' }, { dow: 5, name: 'Fri' }, { dow: 6, name: 'Sat' }, { dow: 0, name: 'Sun' },
+      { dow: 1, name: '月' }, { dow: 2, name: '火' }, { dow: 3, name: '水' },
+      { dow: 4, name: '木' }, { dow: 5, name: '金' }, { dow: 6, name: '土' }, { dow: 0, name: '日' },
     ];
 
     container.innerHTML = `
       <div class="card" style="margin-top:8px">
         <div class="card-title">
           <span class="staff-dot" style="background:${s.color}"></span>
-          ${s.name} — Weekly Schedule
-          <span style="font-size:11px;font-weight:400;color:var(--gray-500);margin-left:4px">Changes apply globally</span>
+          ${s.name} — 週間スケジュール
+          <span style="font-size:11px;font-weight:400;color:var(--gray-500);margin-left:4px">全日程に適用されます</span>
         </div>
         <div class="weekly-editor">
           ${DAYS.map(({ dow, name }) => {
@@ -180,18 +180,18 @@ const PageStaff = (() => {
                   <input type="checkbox" class="we-onduty" data-staff-id="${selectedStaffId}" data-dow="${dow}" ${d.onDuty ? 'checked' : ''}>
                   <span class="toggle-slider"></span>
                 </label>
-                <div class="we-status">${d.onDuty ? 'Working' : 'Day Off'}</div>
+                <div class="we-status">${d.onDuty ? '勤務' : '休み'}</div>
                 <div class="we-times ${d.onDuty ? '' : 'we-hidden'}">
                   <div class="we-field">
-                    <span class="we-lbl">Start</span>
+                    <span class="we-lbl">開始</span>
                     <input type="time" class="we-time-input we-start" data-staff-id="${selectedStaffId}" data-dow="${dow}" value="${d.start}">
                   </div>
                   <div class="we-field">
-                    <span class="we-lbl">End</span>
+                    <span class="we-lbl">終了</span>
                     <input type="time" class="we-time-input we-end" data-staff-id="${selectedStaffId}" data-dow="${dow}" value="${d.end}">
                   </div>
                   <div class="we-field">
-                    <span class="we-lbl">Break</span>
+                    <span class="we-lbl">休憩</span>
                     <input type="time" class="we-time-input we-break-start" data-staff-id="${selectedStaffId}" data-dow="${dow}" value="${d.breakStart}">
                     <span class="we-dash">–</span>
                     <input type="time" class="we-time-input we-break-end" data-staff-id="${selectedStaffId}" data-dow="${dow}" value="${d.breakEnd}">
@@ -222,7 +222,7 @@ const PageStaff = (() => {
         else if (inp.classList.contains('we-break-start')) sched.breakStart = inp.value;
         else if (inp.classList.contains('we-break-end'))   sched.breakEnd = inp.value;
         AppState.refresh();
-        showToast(`${s.name}: schedule updated`);
+        showToast(`${s.name}: スケジュールを更新しました`);
       });
     });
   }

@@ -12,10 +12,10 @@ const Scheduler = (() => {
 
   // ── Transport modes ───────────────────────────────────────────────────────
   const TRANSPORTS = {
-    car:        { label: 'Car',        speed: 25, color: '#3b82f6' },
-    motorcycle: { label: 'Motorcycle', speed: 22, color: '#f59e0b' },
-    bicycle:    { label: 'Bicycle',    speed: 10, color: '#10b981' },
-    train:      { label: 'Train',      speed: 35, color: '#8b5cf6' },
+    car:        { label: '車',          speed: 25, color: '#3b82f6' },
+    motorcycle: { label: 'バイク',      speed: 22, color: '#f59e0b' },
+    bicycle:    { label: '自転車',      speed: 10, color: '#10b981' },
+    train:      { label: '電車',        speed: 35, color: '#8b5cf6' },
   };
 
   // ── Helpers ───────────────────────────────────────────────────────────────
@@ -316,7 +316,7 @@ const Scheduler = (() => {
 
     const onDutyIds = Object.keys(staffState);
     if (!onDutyIds.length) {
-      for (const t of tasks) unassigned.push({ task: t, reason: 'No staff on duty' });
+      for (const t of tasks) unassigned.push({ task: t, reason: '出勤スタッフなし' });
       return { assigned, unassigned, tasks, logs, assignmentDetails };
     }
 
@@ -336,7 +336,7 @@ const Scheduler = (() => {
     for (const [facId, list] of facilityGroups.entries()) {
       const forced = [...new Set(list.map(x => x.forcedStaff).filter(Boolean))];
       if (forced.length > 1) {
-        for (const t of list) unassigned.push({ task: t, reason: `Facility ${facId}: multiple forced-staff constraints` });
+        for (const t of list) unassigned.push({ task: t, reason: `施設 ${facId}: 担当固定の競合` });
         facilityGroups.delete(facId);
       }
     }
@@ -376,8 +376,8 @@ const Scheduler = (() => {
 
           if (!candidates.length) {
             const msg = forcedFac
-              ? `Facility ${facId}: forced staff (${forcedFac}) not available`
-              : `Facility ${facId}: no eligible candidates`;
+              ? `施設 ${facId}: 担当固定スタッフ (${forcedFac}) が不在`
+              : `施設 ${facId}: 対象スタッフなし`;
             for (const t of allFacTasks) unassigned.push({ task: t, reason: msg });
             facilityGroups.delete(facId);
             continue;
@@ -393,7 +393,7 @@ const Scheduler = (() => {
 
           if (!best) {
             for (const t of allFacTasks) {
-              unassigned.push({ task: t, reason: `Facility ${facId}: no staff can accommodate all visits` });
+              unassigned.push({ task: t, reason: `施設 ${facId}: 全訪問を担当できるスタッフなし` });
             }
             facilityGroups.delete(facId);
             continue;
@@ -415,7 +415,7 @@ const Scheduler = (() => {
           if (t.timeKind === 'fixed' && t.fixedStart !== null) {
             const res = canPlaceAtFixed(chosenSt, t, t.fixedStart, clinic);
             if (!res.ok) {
-              unassigned.push({ task: t, reason: `Facility placement failed: ${res.reason}` });
+              unassigned.push({ task: t, reason: `施設配置失敗: ${res.reason}` });
               detail.candidates.push(_infeasibleEntry(chosenId, chosenSt, res.reason));
               detail.infeasibleCount = 1;
               continue;
@@ -424,7 +424,7 @@ const Scheduler = (() => {
           } else {
             const slot = findBestSlotInWindows(chosenSt, t, true, clinic);
             if (!slot) {
-              unassigned.push({ task: t, reason: `Facility ${facId}: no available slot` });
+              unassigned.push({ task: t, reason: `施設 ${facId}: 空きスロットなし` });
               detail.candidates.push(_infeasibleEntry(chosenId, chosenSt, 'WINDOW_NO_SLOT'));
               detail.infeasibleCount = 1;
               continue;
@@ -463,8 +463,8 @@ const Scheduler = (() => {
 
         if (!candidateIds.length) {
           const reason = t.forcedStaff
-            ? `Forced staff (${t.forcedStaff}) not on duty or excluded by NG`
-            : 'All candidates excluded by NG';
+            ? `担当固定スタッフ (${t.forcedStaff}) が不在またはNG除外`
+            : '全候補がNG除外';
           unassigned.push({ task: t, reason });
           continue;
         }
@@ -534,7 +534,7 @@ const Scheduler = (() => {
         } else {
           const reasons = detail.candidates.filter(e => !e.feasible && e.reason !== 'NG_STAFF' && e.reason !== 'FORCED_STAFF_MISMATCH')
             .map(f => `${f.staffName}: ${f.reason}`).join('; ');
-          unassigned.push({ task: t, reason: reasons || 'No available staff' });
+          unassigned.push({ task: t, reason: reasons || '利用可能なスタッフなし' });
           logs.push(`[UNASSIGNED] ${t.patientName} V${t.visitIndex} | ${reasons}`);
         }
       }

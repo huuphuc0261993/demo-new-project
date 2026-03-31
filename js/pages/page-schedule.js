@@ -21,7 +21,7 @@ const PageSchedule = (() => {
       const t = detail.task;
       const isAssigned = detail.chosen !== null;
 
-      const prioLabel = t.priority === 0 ? 'Special' : t.priority === 1 ? 'Fixed' : 'Window';
+      const prioLabel = t.priority === 0 ? '特別' : t.priority === 1 ? '固定' : '時間帯';
       const prioClass = t.priority === 0 ? 'badge-red' : t.priority === 1 ? 'badge-blue' : 'badge-green';
       const facName = t.facilityId
         ? (DEMO_DATA.facilities.find(f => f.id === t.facilityId)?.name || t.facilityId)
@@ -46,9 +46,9 @@ const PageSchedule = (() => {
             <span class="sc-divider">|</span>
             <span class="sc-time">${Scheduler.minToTime(c.slotStart)} – ${Scheduler.minToTime(c.slotEnd)}</span>
             <span class="sc-divider">|</span>
-            <span class="sc-travel">Travel ${c.travelFromPrev} min</span>
+            <span class="sc-travel">移動 ${c.travelFromPrev} 分</span>
             <span class="sc-divider">|</span>
-            <span class="sc-score">Score <strong>${Math.round(c.score)}</strong></span>
+            <span class="sc-score">スコア <strong>${Math.round(c.score)}</strong></span>
           </div>`;
       } else {
         // Find why it was unassigned
@@ -77,7 +77,7 @@ const PageSchedule = (() => {
 
       const altHtml = alternatives.length ? `
         <div class="sc-alternatives">
-          <span class="sc-alt-label">Also feasible:</span>
+          <span class="sc-alt-label">他の候補:</span>
           ${alternatives.map(c => {
             const staffObj = DEMO_DATA.staff.find(s => s.id === c.staffId);
             return `<span class="sc-alt-chip">
@@ -90,7 +90,7 @@ const PageSchedule = (() => {
 
       const rejectHtml = rejectSummary ? `
         <div class="sc-reject-tally">
-          <span class="sc-reject-label">Not feasible (${rejected.length}):</span>
+          <span class="sc-reject-label">不可 (${rejected.length}):</span>
           ${rejectSummary}
         </div>` : '';
 
@@ -117,11 +117,11 @@ const PageSchedule = (() => {
     stepsEl.innerHTML = `
       <div class="sc-page-header">
         <div class="sc-stats-row">
-          <span class="sc-stat ok">✓ Assigned <strong>${r.assigned.length}</strong></span>
-          ${r.unassigned.length ? `<span class="sc-stat ng">✗ Unassigned <strong>${r.unassigned.length}</strong></span>` : ''}
-          <span class="sc-stat neutral">${allDetails.length} tasks total</span>
+          <span class="sc-stat ok">✓ 割り当て済み <strong>${r.assigned.length}</strong></span>
+          ${r.unassigned.length ? `<span class="sc-stat ng">✗ 未割り当て <strong>${r.unassigned.length}</strong></span>` : ''}
+          <span class="sc-stat neutral">${allDetails.length} 件合計</span>
         </div>
-        <div class="sc-formula-hint">Score = prevTravel + nextTravel + gapBefore×0.1 + gapAfter×0.1</div>
+        <div class="sc-formula-hint">スコア = 前移動 + 次移動 + 前ギャップ×0.1 + 後ギャップ×0.1</div>
       </div>
       ${stepsHtml}
       ${pagerHTML(pg)}`;
@@ -131,14 +131,14 @@ const PageSchedule = (() => {
     // Unassigned panel
     document.getElementById('schedule-unassigned').innerHTML = r.unassigned.length ? `
       <div class="unassigned-panel">
-        <div class="title">Unassigned (${r.unassigned.length})</div>
+        <div class="title">未割り当て (${r.unassigned.length})</div>
         ${r.unassigned.map(u => `
           <div class="unassigned-item">
             <strong>${u.task.patientName}</strong>
             <span class="visit-index">V${u.task.visitIndex}</span>
             <div class="reason">${u.reason}</div>
           </div>`).join('')}
-      </div>` : `<div class="success-msg">All tasks assigned successfully.</div>`;
+      </div>` : `<div class="success-msg">すべてのタスクが割り当て済みです。</div>`;
   }
 
   return { render };

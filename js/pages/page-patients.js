@@ -20,7 +20,7 @@ const PagePatients = (() => {
     if (page !== undefined) patientPage = page;
 
     const { patients, facilities, clinic } = DEMO_DATA;
-    const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const DOW = ['日', '月', '火', '水', '木', '金', '土'];
 
     const filtered = _applyFilters(patients);
     const pg = paginate(filtered, patientPage, PER_PAGE);
@@ -48,13 +48,13 @@ const PagePatients = (() => {
         <td class="patient-coords-cell">
           <div class="coords-view" style="display:flex;align-items:center;gap:6px;white-space:nowrap">
             <span class="coords-text" style="font-size:12px;color:var(--gray-600)">${p.lat.toFixed(4)}, ${p.lng.toFixed(4)}</span>
-            <button class="btn coords-edit-btn" data-pid="${p.id}" style="font-size:11px;padding:2px 8px">Edit</button>
+            <button class="btn coords-edit-btn" data-pid="${p.id}" style="font-size:11px;padding:2px 8px">編集</button>
           </div>
           <div class="coords-edit-form" style="display:none;gap:4px;flex-wrap:wrap;align-items:center">
             <input type="number" step="any" class="setting-input coords-lat" value="${p.lat}" style="width:100px;font-size:12px;padding:3px 6px">
             <input type="number" step="any" class="setting-input coords-lng" value="${p.lng}" style="width:100px;font-size:12px;padding:3px 6px">
-            <button class="btn btn-primary coords-save-btn" data-pid="${p.id}" style="font-size:11px;padding:3px 9px">Save</button>
-            <button class="btn btn-outline coords-cancel-btn" style="font-size:11px;padding:3px 9px">Cancel</button>
+            <button class="btn btn-primary coords-save-btn" data-pid="${p.id}" style="font-size:11px;padding:3px 9px">保存</button>
+            <button class="btn btn-outline coords-cancel-btn" style="font-size:11px;padding:3px 9px">キャンセル</button>
             <a href="https://www.google.com/maps?q=${p.lat},${p.lng}" target="_blank" class="coords-map-link" style="font-size:11px;color:var(--primary);white-space:nowrap">View ↗</a>
           </div>
         </td>
@@ -63,19 +63,19 @@ const PagePatients = (() => {
     }).join('');
 
     const emptyRow = filtered.length === 0
-      ? `<tr><td colspan="11" style="text-align:center;color:var(--gray-400);padding:24px">No patients found</td></tr>`
+      ? `<tr><td colspan="11" style="text-align:center;color:var(--gray-400);padding:24px">患者が見つかりません</td></tr>`
       : '';
 
     const listEl = document.getElementById('patients-list');
     listEl.innerHTML = `
       <div class="card">
         <div class="card-title" style="flex-wrap:wrap;gap:10px">
-          <span>Patients (${filtered.length}${filtered.length !== patients.length ? ` / ${patients.length}` : ''})</span>
+          <span>患者一覧 (${filtered.length}${filtered.length !== patients.length ? ` / ${patients.length}` : ''})</span>
           <div style="display:flex;gap:8px;align-items:center;margin-left:auto">
             <div style="position:relative">
               <span style="position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--gray-400);font-size:14px;pointer-events:none">⌕</span>
               <input id="patient-search" type="text" value="${filterSearch}"
-                placeholder="Search name / ID…"
+                placeholder="氏名 / ID で検索…"
                 style="height:32px;border:1px solid var(--gray-200);border-radius:6px;padding:0 10px 0 28px;font-size:13px;width:190px;outline:none">
             </div>
           </div>
@@ -84,9 +84,9 @@ const PagePatients = (() => {
           <table>
             <thead>
               <tr>
-                <th>ID</th><th>Name</th><th>Category</th><th>Source</th><th>Facility</th>
-                <th>Forced staff</th><th>NG staff</th><th>Visit days</th>
-                <th>Distance</th><th>Coordinates</th><th>Special period</th>
+                <th>ID</th><th>氏名</th><th>カテゴリ</th><th>ソース</th><th>施設</th>
+                <th>担当固定</th><th>NG スタッフ</th><th>訪問曜日</th>
+                <th>距離</th><th>座標</th><th>特別期間</th>
               </tr>
             </thead>
             <tbody>${rows || emptyRow}</tbody>
@@ -138,7 +138,7 @@ const PagePatients = (() => {
         const lat = parseFloat(cell.querySelector('.coords-lat').value);
         const lng = parseFloat(cell.querySelector('.coords-lng').value);
         if (isNaN(lat) || isNaN(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) {
-          showToast('Invalid coordinates', 'error'); return;
+          showToast('座標が無効です', 'error'); return;
         }
         const patient = DEMO_DATA.patients.find(p => p.id === pid);
         if (!patient) return;
@@ -150,7 +150,7 @@ const PagePatients = (() => {
         cell.querySelector('.coords-view').style.display = 'flex';
         cell.querySelector('.coords-edit-form').style.display = 'none';
         AppState.refresh();
-        showToast(`${patient.name} coordinates updated → ${lat.toFixed(4)}, ${lng.toFixed(4)}`);
+        showToast(`${patient.name} の座標を更新しました → ${lat.toFixed(4)}, ${lng.toFixed(4)}`);
       });
     });
   }

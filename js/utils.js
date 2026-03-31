@@ -3,15 +3,15 @@
  */
 
 const REASON_LABELS = {
-  NG_STAFF:              'NG staff constraint',
-  FORCED_STAFF_MISMATCH: 'Forced staff mismatch',
-  SHIFT_OUTSIDE:         'Outside shift hours',
-  BREAK_OVERLAP:         'Conflicts with break',
-  BUSY_OVERLAP:          'Conflicts with busy block',
-  WINDOW_NO_SLOT:        'No available slot',
-  TRAVEL_BEFORE:         'Insufficient travel time (before)',
-  TRAVEL_AFTER:          'Insufficient travel time (after)',
-  MISSING_GEO:           'Missing coordinates',
+  NG_STAFF:              'NGスタッフ制約',
+  FORCED_STAFF_MISMATCH: '担当固定の不一致',
+  SHIFT_OUTSIDE:         'シフト時間外',
+  BREAK_OVERLAP:         '休憩と重複',
+  BUSY_OVERLAP:          '予定ブロックと重複',
+  WINDOW_NO_SLOT:        '空きスロットなし',
+  TRAVEL_BEFORE:         '移動時間不足（前）',
+  TRAVEL_AFTER:          '移動時間不足（後）',
+  MISSING_GEO:           '座標未設定',
 };
 
 /** Render a transport badge HTML */
@@ -88,7 +88,7 @@ function pagerHTML(pg) {
 
   return `
     <div class="pager">
-      <span class="pager-info">${start + 1}–${end} of ${total}</span>
+      <span class="pager-info">${start + 1}–${end} / ${total}</span>
       <div class="pager-btns">
         <button class="pager-btn" data-page="${current - 1}" ${current <= 1 ? 'disabled' : ''}>‹</button>
         ${nums.map(p => p === '...'
@@ -115,10 +115,10 @@ function wirePager(container, onPage) {
 
 /** Build the route flow HTML for a staff's ordered visits */
 function buildRouteFlow(visits, transport, clinic) {
-  if (!visits || !visits.length) return '<p class="empty-msg">No visits assigned.</p>';
+  if (!visits || !visits.length) return '<p class="empty-msg">訪問先が割り当てられていません。</p>';
 
   let html = '<div class="route-flow">';
-  html += `<div class="rf-node rf-clinic"><div class="rf-dot" style="background:#ef4444"></div><div class="rf-label">Base</div><div class="rf-sub">Depart</div></div>`;
+  html += `<div class="rf-node rf-clinic"><div class="rf-dot" style="background:#ef4444"></div><div class="rf-label">拠点</div><div class="rf-sub">出発</div></div>`;
 
   let prevLat = clinic.lat;
   let prevLng = clinic.lng;
@@ -148,7 +148,7 @@ function buildRouteFlow(visits, transport, clinic) {
       <div class="rf-arrow"></div>
       <div class="rf-travel">${retTravel} min</div>
     </div>
-    <div class="rf-node rf-clinic"><div class="rf-dot" style="background:#ef4444"></div><div class="rf-label">Base</div><div class="rf-sub">Return</div></div>
+    <div class="rf-node rf-clinic"><div class="rf-dot" style="background:#ef4444"></div><div class="rf-label">拠点</div><div class="rf-sub">帰還</div></div>
   </div>`;
 
   return html;

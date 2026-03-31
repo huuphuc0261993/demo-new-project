@@ -22,12 +22,12 @@ const PageMap = (() => {
     document.getElementById('map-page-content').innerHTML = `
       <div class="map-page-wrap">
         <div class="map-staff-selector">
-          <label class="mss-label">Staff</label>
+          <label class="mss-label">スタッフ</label>
           <select id="map-staff-select">
             ${staffWithVisits.map(sid => {
               const s = staff.find(x => x.id === sid);
               const count = sRoutes[sid]?.visits?.length || 0;
-              return `<option value="${sid}" ${sid === activeStaffId ? 'selected' : ''}>${s.name} — ${count} visit${count !== 1 ? 's' : ''} · ${transportBadge(s.transport).replace(/<[^>]+>/g, '')}</option>`;
+              return `<option value="${sid}" ${sid === activeStaffId ? 'selected' : ''}>${s.name} — ${count} 件 · ${transportBadge(s.transport).replace(/<[^>]+>/g, '')}</option>`;
             }).join('')}
           </select>
           ${activeStaffId && sRoutes[activeStaffId] ? (() => {
@@ -49,7 +49,7 @@ const PageMap = (() => {
     L.marker([clinic.lat, clinic.lng], {
       icon: L.divIcon({
         className: '',
-        html: `<div class="map-clinic-marker">Base</div>`,
+        html: `<div class="map-clinic-marker">拠点</div>`,
         iconSize: [52, 24], iconAnchor: [26, 12],
       }),
     }).bindPopup(`<strong>${clinic.name}</strong><br>${clinic.address}`).addTo(mapInst);
@@ -84,9 +84,9 @@ const PageMap = (() => {
         }).bindPopup(`
           <div class="map-popup">
             <div class="mp-name">${name}</div>
-            <div class="mp-row"><span>Staff</span><span>${route.staff.name}</span></div>
-            <div class="mp-row"><span>Time</span><span>${start} – ${end}</span></div>
-            <div class="mp-row"><span>Transport</span><span>${Scheduler.TRANSPORTS[route.staff.transport]?.label || route.staff.transport}</span></div>
+            <div class="mp-row"><span>スタッフ</span><span>${route.staff.name}</span></div>
+            <div class="mp-row"><span>時刻</span><span>${start} – ${end}</span></div>
+            <div class="mp-row"><span>移動手段</span><span>${Scheduler.TRANSPORTS[route.staff.transport]?.label || route.staff.transport}</span></div>
           </div>`).addTo(mapInst);
         markers.push(m);
       });
@@ -127,7 +127,7 @@ const PageMap = (() => {
   function renderRouteDetail(sRoutes, opts, clinic) {
     const detailEl = document.getElementById('map-route-detail');
     if (!activeStaffId || !sRoutes[activeStaffId]) {
-      detailEl.innerHTML = '<div class="no-route-msg">Select a staff member above.</div>';
+      detailEl.innerHTML = '<div class="no-route-msg">上のリストからスタッフを選択してください。</div>';
       return;
     }
 
@@ -161,26 +161,26 @@ const PageMap = (() => {
         ${timeSaved > 0 ? `
           <div class="savings-banner">
             <span class="sb-icon">&#9651;</span>
-            Route optimization can save <strong>${timeSaved} min</strong>
+            ルート最適化で <strong>${timeSaved} 分</strong> 短縮できます
           </div>` : `
           <div class="savings-banner optimal">
             <span class="sb-icon">&#10003;</span>
-            This route is already optimal
+            このルートはすでに最適です
           </div>`}
 
         <div class="route-compare">
           <div class="rc-col">
-            <div class="rc-label">Current order <span class="rc-total">${origTimes.total} min</span></div>
+            <div class="rc-label">現在の順序 <span class="rc-total">${origTimes.total} 分</span></div>
             ${buildRouteFlowCompact(visits, origTimes.legs, s.color, false)}
           </div>
           ${timeSaved > 0 ? `
           <div class="rc-col">
-            <div class="rc-label optimized">Optimized order <span class="rc-total saved">${optTimes.total} min</span></div>
+            <div class="rc-label optimized">最適化後の順序 <span class="rc-total saved">${optTimes.total} 分</span></div>
             ${buildRouteFlowCompact(optVisits, optTimes.legs, s.color, true)}
           </div>` : ''}
         </div>
 
-        <div class="rdp-section-title">Travel time by transport mode</div>
+        <div class="rdp-section-title">移動手段別の所要時間</div>
         <div class="transport-compare">
           ${Object.entries(Scheduler.TRANSPORTS).map(([k, t]) => {
             const total = calcRouteTimes(optVisits, k, clinic).total;
@@ -190,8 +190,8 @@ const PageMap = (() => {
               <div class="tc-bar-wrap">
                 <div class="tc-bar" style="width:${Math.min(Math.round((total / 120) * 100), 100)}%;background:${t.color}"></div>
               </div>
-              <div class="tc-time">${total} min</div>
-              ${isCurrent ? '<div class="tc-tag">In use</div>' : ''}
+              <div class="tc-time">${total} 分</div>
+              ${isCurrent ? '<div class="tc-tag">使用中</div>' : ''}
             </div>`;
           }).join('')}
         </div>
@@ -226,15 +226,15 @@ const PageMap = (() => {
   }
 
   function buildRouteFlowCompact(visits, legs, color, isOptimized) {
-    if (!visits.length) return '<div class="empty-msg">No visits assigned.</div>';
+    if (!visits.length) return '<div class="empty-msg">訪問先が割り当てられていません。</div>';
     let html = '<div class="route-flow-v">';
-    html += `<div class="rfv-node clinic"><div class="rfv-dot" style="background:#ef4444"></div><span>Base</span></div>`;
+    html += `<div class="rfv-node clinic"><div class="rfv-dot" style="background:#ef4444"></div><span>拠点</span></div>`;
     visits.forEach((v, i) => {
       const name = v.task ? v.task.patientName : v.patientName;
       const start = v.start || '–';
       const end = v.end || '–';
       html += `
-        <div class="rfv-leg"><span class="rfv-travel">${legs[i]} min</span></div>
+        <div class="rfv-leg"><span class="rfv-travel">${legs[i]} 分</span></div>
         <div class="rfv-node patient ${isOptimized ? 'opt' : ''}">
           <div class="rfv-num" style="background:${color}">${i + 1}</div>
           <div class="rfv-info">
@@ -244,7 +244,7 @@ const PageMap = (() => {
         </div>`;
     });
     html += `
-      <div class="rfv-leg"><span class="rfv-travel">${legs[visits.length]} min</span></div>
+      <div class="rfv-leg"><span class="rfv-travel">${legs[visits.length]} 分</span></div>
       <div class="rfv-node clinic"><div class="rfv-dot" style="background:#ef4444"></div><span>Base</span></div>
     </div>`;
     return html;
