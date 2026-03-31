@@ -46,9 +46,9 @@ const App = (() => {
       if (page) renderPage(page);
     });
 
-    // Init state: default to HOMIS
+    // Init state: default to ROUTE (all sources)
     AppState.initWeeklySchedules();
-    AppState.setSystem('HOMIS');
+    AppState.setSystem('ROUTE');
     navigateTo('dashboard');
   }
 

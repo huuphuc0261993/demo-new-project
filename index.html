@@ -65,7 +65,8 @@
         <div class="system-selector-wrap">
           <label class="system-selector-label">システム</label>
           <select id="system-select" class="system-select">
-            <option value="HOMIS" selected>HOMIS</option>
+            <option value="ROUTE" selected>ROUTE</option>
+            <option value="HOMIS">HOMIS</option>
             <option value="NURSEE">NURSEE</option>
           </select>
         </div>
@@ -126,7 +127,7 @@
 
 <div id="toast" class="toast"></div>
 
-<!-- Staff schedule modal -->
+<!-- Booking info modal -->
 <div id="staff-modal-overlay" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeStaffModal()">
   <div class="modal-box">
     <div class="modal-header">
@@ -140,6 +141,62 @@
       <button class="modal-close" onclick="closeStaffModal()">✕</button>
     </div>
     <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<!-- New booking modal -->
+<div id="booking-create-overlay" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeBookingCreate()">
+  <div class="modal-box" style="width:420px">
+    <div class="modal-header">
+      <div class="modal-staff-info">
+        <div>
+          <div class="modal-staff-name">新規ブッキング</div>
+          <div class="modal-staff-role" id="bc-date-label"></div>
+        </div>
+      </div>
+      <button class="modal-close" onclick="closeBookingCreate()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="bc-field">
+        <label class="bc-lbl">患者</label>
+        <select id="bc-patient" class="setting-input" style="width:100%"></select>
+      </div>
+      <div class="bc-field">
+        <label class="bc-lbl">スタッフ</label>
+        <select id="bc-staff" class="setting-input" style="width:100%"></select>
+      </div>
+      <div class="bc-field bc-time-row">
+        <div>
+          <label class="bc-lbl">開始</label>
+          <input type="time" id="bc-start" class="setting-input">
+        </div>
+        <div>
+          <label class="bc-lbl">終了</label>
+          <input type="time" id="bc-end" class="setting-input">
+        </div>
+      </div>
+      <div id="bc-error" style="color:var(--danger);font-size:12px;margin-top:4px;min-height:18px"></div>
+      <div class="bc-actions">
+        <button class="btn btn-primary" id="bc-confirm">追加</button>
+        <button class="btn btn-outline" onclick="closeBookingCreate()">キャンセル</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Patient create / edit modal -->
+<div id="patient-modal-overlay" class="modal-overlay" style="display:none" onclick="if(event.target===this)closePatientModal()">
+  <div class="modal-box" style="width:520px;max-height:90vh;overflow-y:auto">
+    <div class="modal-header">
+      <div class="modal-staff-info">
+        <div>
+          <div class="modal-staff-name" id="pm-title">新規患者登録</div>
+          <div class="modal-staff-role" id="pm-id-label"></div>
+        </div>
+      </div>
+      <button class="modal-close" onclick="closePatientModal()">✕</button>
+    </div>
+    <div class="modal-body" id="pm-body"></div>
   </div>
 </div>
 

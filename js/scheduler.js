@@ -229,6 +229,7 @@ const Scheduler = (() => {
     const tasks = [];
 
     for (const p of patients) {
+      if (p.disabled) continue;
       if (p.cancelPeriod && date >= p.cancelPeriod.start && date <= p.cancelPeriod.end) continue;
 
       const isSpecial = p.specialPeriod &&

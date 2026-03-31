@@ -10,7 +10,7 @@
 const AppState = {
   selectedDate: '2026-03-30',
   scheduleResult: null,
-  activeSystem: 'HOMIS',
+  activeSystem: 'ROUTE',
 
   /** staffId → { 0..6: { onDuty, start, end, breakStart, breakEnd } } */
   weeklySchedules: {},
@@ -51,11 +51,17 @@ const AppState = {
     }
   },
 
-  /** Switch data source (HOMIS | NURSEE) — filters DEMO_DATA, then refreshes. */
+  /** Switch data source (ROUTE | HOMIS | NURSEE) — filters DEMO_DATA, then refreshes.
+   *  ROUTE shows all staff and patients regardless of source. */
   setSystem(system) {
     this.activeSystem = system;
-    DEMO_DATA.staff    = this._allStaff.filter(s => s.source === system);
-    DEMO_DATA.patients = this._allPatients.filter(p => p.source === system);
+    if (system === 'ROUTE') {
+      DEMO_DATA.staff    = this._allStaff.filter(s => s.source === 'HOMIS');
+      DEMO_DATA.patients = this._allPatients.filter(p => p.source === 'HOMIS');
+    } else {
+      DEMO_DATA.staff    = this._allStaff.filter(s => s.source === system);
+      DEMO_DATA.patients = this._allPatients.filter(p => p.source === system);
+    }
     this.refresh();
   },
 
